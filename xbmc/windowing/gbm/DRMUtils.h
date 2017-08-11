@@ -27,7 +27,13 @@
 
 #include "guilib/Resolution.h"
 #include "GBMUtils.h"
-#include "DRMLegacy.h"
+
+struct plane
+{
+  drmModePlane *plane;
+  drmModeObjectProperties *props;
+  drmModePropertyRes **props_info;
+};
 
 struct crtc
 {
@@ -47,9 +53,13 @@ struct drm
 {
   int fd;
 
+  /* only used for atomic: */
+  struct plane *plane;
   struct crtc *crtc;
   struct connector *connector;
   int crtc_index;
+  int kms_in_fence_fd;
+  int kms_out_fence_fd;
 
   drmModeModeInfo *mode;
   uint32_t crtc_id;

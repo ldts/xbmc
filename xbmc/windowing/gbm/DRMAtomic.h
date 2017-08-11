@@ -23,17 +23,18 @@
 #include "DRMUtils.h"
 #include "GLContextEGL.h"
 
-class CDRMLegacy : public CDRMUtils
+class CDRMAtomic : public CDRMUtils
 {
 public:
   static void FlipPage(CGLContextEGL *pGLContext);
   static bool SetVideoMode(RESOLUTION_INFO res);
-  static bool InitDrmLegacy(drm *drm, gbm *gbm);
-  static void DestroyDrmLegacy();
+  static bool InitDrmAtomic(drm *drm, gbm *gbm);
+  static void DestroyDrmAtomic();
 
 private:
-  static bool WaitingForFlip();
-  static bool QueueFlip();
-  static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
-                              unsigned int usec, void *data);
+  static bool AddConnectorProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
+  static bool AddCrtcProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
+  static bool AddPlaneProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
+  static bool DrmAtomicCommit(int fb_id, int flags);
+  static int GetPlaneId();
 };
